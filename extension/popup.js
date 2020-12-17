@@ -1,16 +1,18 @@
 // popup.js
 
 document.body.onload = function () {
-  chrome.storage.sync.get("data", function (items) {
+  chrome.storage.sync.get(["url", "token"], function (items) {
     if (!chrome.runtime.error) {
-      document.getElementById("data").innerText = items.data;
+      document.getElementById("saved-url").innerText = items.url;
+      document.getElementById("saved-token").innerText = items.token;
     }
   });
 }
 
 document.getElementById("set").onclick = function () {
-  var d = document.getElementById("text").value;
-  chrome.storage.sync.set({ "data": d }, function () {
+  var url = document.getElementById("url").value;
+  var token = document.getElementById("token").value;
+  chrome.storage.sync.set({ "url": url, "token": token }, function () {
     if (chrome.runtime.error) {
       console.log("Runtime error.");
     } else {
