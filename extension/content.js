@@ -41,4 +41,45 @@
 			});
 		}
 	}, 300);
+
+        var counts = [];
+        var last = "";
+        var count = 0;
+        const timeout = 10;
+
+        async function start() {
+            while(parseInt(document.querySelector(".left").textContent.split(": ")[1]) > 0) {
+                var d = document.querySelector(".problem").textContent;
+                count++;
+                if(last !== d) {
+                    if(last !== "")
+                        counts.push({"problem": last, "time": count * timeout});
+                    last = d;
+                    count = 0;
+                }
+                await new Promise(r => setTimeout(r, timeout));
+            }
+            counts.sort((a,b)=>a.time-b.time);
+            console.log(counts);
+            var array = [];
+            for(var k of counts) array.push(k.time);
+            getStandardDeviation(array);
+        }
+
+        function getStandardDeviation (array) {
+            const n = array.length
+            const mean = array.reduce((a, b) => a + b) / n
+            const std = Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
+            console.log(`mean: ${mean}, std: ${std}`);
+        }
+
+
+        var timer = setInterval(async () => {
+            if(document.querySelector(".left") && parseInt(document.querySelector(".left").textContent.split(": ")[1]) > 0) {
+                console.log("started!");
+                clearInterval(timer);
+                await start();
+                console.log("done!");
+            }
+        }, 500);
 })();
